@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TechStack Detector — Identify technologies used by any website" />
+  <title>TechStack Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <main class="app" id="app">
+
+    <!-- ── Header ──────────────────────────────────────────────────── -->
+    <header class="hero" id="hero">
+      <div class="hero-inner">
+        <div class="hero-brand">
+          <span class="hero-icon">⚡</span>
+          <div class="hero-text">
+            <p class="eyebrow">Technology Scanner</p>
+            <h1>TechStack Detector</h1>
+          </div>
+        </div>
+        <p id="pageLabel" class="page-label">Ready to scan the active tab</p>
+      </div>
+      <button id="scanBtn" class="scan-btn" type="button">
+        <svg class="scan-icon" viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+          <path d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.45 4.38l3.59 3.58a1 1 0 01-1.42 1.42l-3.58-3.59A7 7 0 012 9z"/>
+        </svg>
+        <span>Scan Site</span>
+      </button>
+    </header>
+
+    <!-- ── Search / Filter ─────────────────────────────────────────── -->
+    <div class="search-bar hidden" id="searchBar">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+        <path d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.45 4.38l3.59 3.58a1 1 0 01-1.42 1.42l-3.58-3.59A7 7 0 012 9z"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Filter technologies…" autocomplete="off" />
+    </div>
+
+    <!-- ── Status ──────────────────────────────────────────────────── -->
+    <section class="status-card" id="statusCard">
+      <div class="status-row">
+        <span id="statusIndicator" class="status-dot idle"></span>
+        <span id="status" class="status-text">Idle</span>
+      </div>
+      <p id="summary" class="summary-text">Click "Scan Site" to analyze the current page.</p>
+    </section>
+
+    <!-- ── Loading Skeleton ────────────────────────────────────────── -->
+    <section id="skeleton" class="skeleton hidden">
+      <div class="skeleton-card">
+        <div class="skeleton-line w60"></div>
+        <div class="skeleton-line w80"></div>
+        <div class="skeleton-line w40"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-line w50"></div>
+        <div class="skeleton-line w70"></div>
+        <div class="skeleton-line w35"></div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-line w45"></div>
+        <div class="skeleton-line w65"></div>
+      </div>
+    </section>
+
+    <!-- ── Results ─────────────────────────────────────────────────── -->
+    <section id="results" class="results"></section>
+
+    <!-- ── Footer ──────────────────────────────────────────────────── -->
+    <footer class="footer" id="footer">
+      <span>TechStack Detector v2.0</span>
+      <span id="scanTime" class="scan-time"></span>
+    </footer>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
