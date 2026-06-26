@@ -1,5 +1,5 @@
 /**
- * TechStack Detector — Central Scan Engine
+ * CyberScope — Central Scan Engine
  *
  * Orchestrates all detector modules. Collects page signals, tests
  * each signature against the appropriate signal source, computes

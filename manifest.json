@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "TechStack Detector",
+  "name": "CyberScope",
   "version": "2.0.0",
   "description": "Professional-grade technology fingerprint detection for any website. Detects frontend frameworks, CMS, JS libraries, backend frameworks, web servers, hosting, CDN, analytics, security tools, and payment providers.",
   "permissions": [
@@ -10,7 +10,7 @@
     "tabs"
   ],
   "action": {
-    "default_title": "TechStack Detector",
+    "default_title": "CyberScope",
     "default_popup": "popup.html"
   },
   "background": {
