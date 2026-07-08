@@ -1,5 +1,5 @@
 /**
- * TechStack Detector — Background Service Worker (Manifest V3)
+ * CyberScope — Background Service Worker (Manifest V3)
  *
  * Responsibilities:
  *  1. Handle SCAN_ACTIVE_TAB messages from the popup
