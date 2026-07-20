@@ -1,27 +1,14 @@
 /**
- * CyberScope — Central Scan Engine
+ * CyberScope — Central Scan Engine (High Accuracy & Deep Inspection)
  *
  * Orchestrates all detector modules. Collects page signals, tests
  * each signature against the appropriate signal source, computes
  * weighted confidence, handles deduplication and "implies" relationships,
+ * extracts deep technology metadata, performs security posture audits,
  * and returns structured results.
- *
- * Signal sources:
- *   html           – full document.documentElement.outerHTML
- *   scriptSrcs     – script tag src attributes (URLs only)
- *   scriptContents – inline script text (capped per script)
- *   metaTags       – meta name + property + content + http-equiv
- *   linkHrefs      – link tag rel + href
- *   resourceUrls   – performance.getEntriesByType('resource') names
- *   cookies        – document.cookie
- *   globals        – detected window globals (from globals-probe.js)
- *   headers        – response headers (from globals-probe.js MAIN world fetch)
- *   classes        – body + html class names
  */
 (() => {
   'use strict';
-
-  /* Allow re-initialization so re-scans work */
 
   /* ────────────────────────────────────────────────────────────────── */
   /*  Signal Collection                                                */
@@ -73,9 +60,10 @@
       document.body?.className || ''
     ].join(' ');
 
-    /* Globals from globals-probe.js (written as a data attribute in MAIN world) */
+    /* Globals & Deep Data from globals-probe.js */
     let globals = '';
     let globalVersions = {};
+    let deepData = {};
     try {
       const attr = document.documentElement.getAttribute('data-techstack-globals');
       if (attr) {
@@ -85,15 +73,11 @@
           .map(([k]) => k)
           .join(' ');
         globalVersions = parsed.versions || {};
+        deepData = parsed.deepData || {};
       }
     } catch { /* ignore parse errors */ }
 
-    /*
-     * Headers from globals-probe.js MAIN world HEAD fetch.
-     * The probe writes headers to data-techstack-headers because
-     * MAIN world fetch is same-origin (full header access),
-     * whereas ISOLATED world fetch gets CORS-filtered headers.
-     */
+    /* Headers from globals-probe.js MAIN world HEAD fetch */
     let headers = '';
     try {
       headers = document.documentElement.getAttribute('data-techstack-headers') || '';
@@ -111,6 +95,7 @@
       classes,
       headers,
       globalVersions,
+      deepData,
     };
   }
 
@@ -118,10 +103,6 @@
   /*  Fallback Header Fetching                                         */
   /* ────────────────────────────────────────────────────────────────── */
 
-  /**
-   * Fallback: try fetching headers from the ISOLATED world.
-   * May return limited headers due to CORS, but better than nothing.
-   */
   async function fetchHeadersFallback() {
     try {
       const controller = new AbortController();
@@ -143,21 +124,86 @@
   }
 
   /* ────────────────────────────────────────────────────────────────── */
+  /*  Security Posture Audit                                           */
+  /* ────────────────────────────────────────────────────────────────── */
+
+  /**
+   * Perform deep audit of response security headers.
+   * @param {string} headersText 
+   * @returns {Object} security posture summary
+   */
+  function auditSecurityHeaders(headersText) {
+    if (!headersText) return null;
+
+    const lower = headersText.toLowerCase();
+    const checks = [
+      {
+        key: 'hsts',
+        label: 'HTTP Strict Transport Security (HSTS)',
+        present: lower.includes('strict-transport-security:'),
+        detail: lower.match(/strict-transport-security:\s*([^\r\n]+)/i)?.[1] || null
+      },
+      {
+        key: 'csp',
+        label: 'Content Security Policy (CSP)',
+        present: lower.includes('content-security-policy:'),
+        detail: lower.includes('content-security-policy:') ? 'Active' : null
+      },
+      {
+        key: 'xfo',
+        label: 'X-Frame-Options',
+        present: lower.includes('x-frame-options:'),
+        detail: lower.match(/x-frame-options:\s*([^\r\n]+)/i)?.[1] || null
+      },
+      {
+        key: 'cto',
+        label: 'X-Content-Type-Options',
+        present: lower.includes('x-content-type-options:'),
+        detail: lower.match(/x-content-type-options:\s*([^\r\n]+)/i)?.[1] || null
+      },
+      {
+        key: 'rp',
+        label: 'Referrer Policy',
+        present: lower.includes('referrer-policy:'),
+        detail: lower.match(/referrer-policy:\s*([^\r\n]+)/i)?.[1] || null
+      },
+      {
+        key: 'pp',
+        label: 'Permissions Policy',
+        present: lower.includes('permissions-policy:'),
+        detail: lower.includes('permissions-policy:') ? 'Active' : null
+      }
+    ];
+
+    const passedCount = checks.filter(c => c.present).length;
+    const scorePct = Math.round((passedCount / checks.length) * 100);
+
+    return {
+      scorePct,
+      passedCount,
+      totalCount: checks.length,
+      checks
+    };
+  }
+
+  /* ────────────────────────────────────────────────────────────────── */
   /*  Detection Logic                                                  */
   /* ────────────────────────────────────────────────────────────────── */
 
-  /** Category display order and labels */
   const CATEGORY_META = {
-    frontend:  { label: 'Frontend Frameworks', order: 0 },
-    libraries: { label: 'JavaScript Libraries', order: 1 },
-    cms:       { label: 'CMS / Commerce', order: 2 },
-    backend:   { label: 'Backend Frameworks (Inferred)', order: 3 },
-    webserver: { label: 'Web Servers', order: 4 },
-    hosting:   { label: 'Hosting', order: 5 },
-    cdn:       { label: 'CDN', order: 6 },
-    analytics: { label: 'Analytics & Tracking', order: 7 },
-    security:  { label: 'Security & Monitoring', order: 8 },
-    payments:  { label: 'Payments', order: 9 },
+    frontend:    { label: 'Frontend Frameworks', order: 0 },
+    libraries:   { label: 'JavaScript Libraries', order: 1 },
+    cms:         { label: 'CMS / Commerce', order: 2 },
+    backend:     { label: 'Backend Frameworks (Inferred)', order: 3 },
+    webserver:   { label: 'Web Servers', order: 4 },
+    hosting:     { label: 'Hosting', order: 5 },
+    cdn:         { label: 'CDN', order: 6 },
+    analytics:   { label: 'Analytics & Tracking', order: 7 },
+    security:    { label: 'Security & Monitoring', order: 8 },
+    payments:    { label: 'Payments', order: 9 },
+    fonts:       { label: 'Fonts & Icons', order: 10 },
+    tagmanagers: { label: 'Tag Managers & Consent', order: 11 },
+    marketing:   { label: 'Marketing & Chat', order: 12 },
   };
 
   /**
@@ -170,6 +216,7 @@
     const groups = {};
     const seenNames = new Set();
     const impliedTechs = [];
+    const deepData = signals.deepData || {};
 
     /* Initialise empty groups */
     for (const cat of Object.keys(CATEGORY_META)) {
@@ -212,6 +259,7 @@
           evidence: matchedEvidence.slice(0, 5),
           inferred: !!sig.inferred,
           headerOnly: !!sig.headerOnly,
+          details: [],
         };
 
         /* Check version info */
@@ -221,6 +269,45 @@
         );
         if (versionKey && signals.globalVersions[versionKey]) {
           result.version = signals.globalVersions[versionKey];
+        }
+
+        /* Extract Header Versions for Web Servers / CDNs */
+        if (category === 'webserver' && signals.headers) {
+          const serverHeader = signals.headers.match(/^server:\s*(.+)$/im)?.[1];
+          if (serverHeader && serverHeader.toLowerCase().includes(sig.name.toLowerCase())) {
+            const verMatch = serverHeader.match(/[\d.]+/);
+            if (verMatch && !result.version) {
+              result.version = verMatch[0];
+            }
+          }
+        }
+
+        /* Deep Technology Specific Details */
+        if (sig.name === 'Google Analytics') {
+          if (deepData.ga4Id) result.details.push(`GA4 Measurement ID: ${deepData.ga4Id}`);
+          if (deepData.uaId) result.details.push(`Universal Analytics ID: ${deepData.uaId}`);
+        }
+        if (sig.name === 'Google Tag Manager' && deepData.gtmId) {
+          result.details.push(`Container ID: ${deepData.gtmId}`);
+        }
+        if (sig.name === 'Meta Pixel' && deepData.metaPixelId) {
+          result.details.push(`Pixel ID: ${deepData.metaPixelId}`);
+        }
+        if (sig.name === 'Hotjar' && deepData.hotjarId) {
+          result.details.push(`Site ID: ${deepData.hotjarId}`);
+        }
+        if (sig.name === 'Microsoft Clarity' && deepData.clarityId) {
+          result.details.push(`Project ID: ${deepData.clarityId}`);
+        }
+        if (sig.name === 'Next.js') {
+          if (deepData.nextBuildId) result.details.push(`Build ID: ${deepData.nextBuildId.slice(0, 16)}`);
+          if (deepData.nextPage) result.details.push(`Route: ${deepData.nextPage}`);
+        }
+        if (sig.name === 'WordPress') {
+          if (deepData.wpTheme) result.details.push(`Active Theme: ${deepData.wpTheme}`);
+          if (deepData.wpPlugins && deepData.wpPlugins.length > 0) {
+            result.details.push(`Active Plugins (${deepData.wpPlugins.length}): ${deepData.wpPlugins.slice(0, 8).join(', ')}${deepData.wpPlugins.length > 8 ? '...' : ''}`);
+          }
         }
 
         groups[category].push(result);
@@ -259,6 +346,7 @@
         evidence: [`Implied by ${imp.via}`],
         inferred: false,
         implied: true,
+        details: [],
       });
       seenNames.add(imp.name);
     }
@@ -276,11 +364,15 @@
       totalDetected += items.length;
     }
 
+    /* Security Audit */
+    const securityAudit = auditSecurityHeaders(signals.headers);
+
     return {
       groups,
       categoryCounts,
       totalDetected,
       categoryMeta: CATEGORY_META,
+      securityAudit,
     };
   }
 
@@ -290,7 +382,7 @@
 
   self.TechScanEngine = {
     /**
-     * Run a full scan: collect signals, detect technologies.
+     * Run a full scan: collect signals, detect technologies, extract deep insights.
      * @returns {Promise<Object>} detection results
      */
     async scan() {

@@ -158,5 +158,117 @@
       ],
       requiredMatches: 1,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Heap Analytics ────────────────────────────────────────────── */
+    {
+      name: 'Heap',
+      icon: '📊',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /cdn\.heapanalytics\.com/i,            weight: 0.55, evidence: 'Heap analytics CDN script' },
+        { source: 'resourceUrls',  regex: /heapanalytics\.com/i,                 weight: 0.55, evidence: 'Heap analytics resources' },
+        { source: 'globals',       regex: /\bheap\b/,                            weight: 0.45, evidence: 'window.heap global present' },
+        { source: 'html',          regex: /heapanalytics\.com/i,                 weight: 0.40, evidence: 'Heap reference in HTML' },
+        { source: 'scriptContents', regex: /heap\.load/i,                        weight: 0.45, evidence: 'heap.load() call found' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Amplitude ─────────────────────────────────────────────────── */
+    {
+      name: 'Amplitude',
+      icon: '📈',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /cdn\.amplitude\.com/i,                weight: 0.55, evidence: 'Amplitude CDN script loaded' },
+        { source: 'resourceUrls',  regex: /amplitude\.com/i,                     weight: 0.50, evidence: 'Amplitude resources loaded' },
+        { source: 'globals',       regex: /\bamplitude\b/,                       weight: 0.45, evidence: 'window.amplitude global' },
+        { source: 'scriptContents', regex: /amplitude\.init/i,                   weight: 0.45, evidence: 'amplitude.init() call' },
+        { source: 'resourceUrls',  regex: /api\.amplitude\.com/i,                weight: 0.50, evidence: 'Amplitude API endpoint' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Pendo ─────────────────────────────────────────────────────── */
+    {
+      name: 'Pendo',
+      icon: '📐',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /cdn\.pendo\.io/i,                     weight: 0.55, evidence: 'Pendo CDN script loaded' },
+        { source: 'resourceUrls',  regex: /pendo\.io/i,                          weight: 0.55, evidence: 'Pendo resources loaded' },
+        { source: 'globals',       regex: /\bpendo\b/,                           weight: 0.50, evidence: 'window.pendo global' },
+        { source: 'html',          regex: /pendo\.io/i,                          weight: 0.40, evidence: 'Pendo reference in HTML' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Matomo / Piwik ────────────────────────────────────────────── */
+    {
+      name: 'Matomo',
+      icon: '📊',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /matomo\.js|piwik\.js/i,               weight: 0.55, evidence: 'Matomo/Piwik tracker script' },
+        { source: 'resourceUrls',  regex: /matomo\.php|piwik\.php/i,             weight: 0.50, evidence: 'Matomo/Piwik tracking endpoint' },
+        { source: 'globals',       regex: /\b_paq\b/,                            weight: 0.50, evidence: 'window._paq tracking array (Matomo)' },
+        { source: 'html',          regex: /matomo\.js|piwik\.js/i,               weight: 0.45, evidence: 'Matomo/Piwik script reference in HTML' },
+        { source: 'scriptContents', regex: /_paq\.push/i,                        weight: 0.40, evidence: '_paq.push() tracking call' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Clicky ────────────────────────────────────────────────────── */
+    {
+      name: 'Clicky',
+      icon: '📊',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /static\.getclicky\.com/i,             weight: 0.55, evidence: 'Clicky tracking script loaded' },
+        { source: 'resourceUrls',  regex: /getclicky\.com/i,                     weight: 0.55, evidence: 'Clicky resources loaded' },
+        { source: 'globals',       regex: /\bclicky\b/,                          weight: 0.40, evidence: 'window.clicky global' },
+        { source: 'html',          regex: /getclicky\.com/i,                     weight: 0.40, evidence: 'Clicky reference in HTML' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Lucky Orange ──────────────────────────────────────────────── */
+    {
+      name: 'Lucky Orange',
+      icon: '🍊',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /d10lpsik1i8c69\.cloudfront\.net|luckyorange/i, weight: 0.55, evidence: 'Lucky Orange script loaded' },
+        { source: 'resourceUrls',  regex: /luckyorange\.com/i,                   weight: 0.55, evidence: 'Lucky Orange resources loaded' },
+        { source: 'globals',       regex: /\b__lo_site_id\b/,                    weight: 0.50, evidence: 'Lucky Orange site ID global' },
+        { source: 'html',          regex: /luckyorange/i,                        weight: 0.40, evidence: 'Lucky Orange reference in HTML' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Crazy Egg ─────────────────────────────────────────────────── */
+    {
+      name: 'Crazy Egg',
+      icon: '🥚',
+      patterns: [
+        { source: 'scriptSrcs',    regex: /script\.crazyegg\.com/i,              weight: 0.55, evidence: 'Crazy Egg script loaded' },
+        { source: 'resourceUrls',  regex: /crazyegg\.com/i,                      weight: 0.55, evidence: 'Crazy Egg resources loaded' },
+        { source: 'html',          regex: /crazyegg\.com/i,                      weight: 0.45, evidence: 'Crazy Egg reference in HTML' },
+        { source: 'globals',       regex: /\bCE2\b/,                             weight: 0.45, evidence: 'window.CE2 global (Crazy Egg)' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Adobe Analytics (Omniture) ────────────────────────────────── */
+    {
+      name: 'Adobe Analytics',
+      icon: '🔴',
+      patterns: [
+        { source: 'globals',       regex: /\bs_account\b/,                       weight: 0.45, evidence: 'window.s_account global (Adobe Analytics)' },
+        { source: 'scriptSrcs',    regex: /s_code\.js|appmeasurement\.js/i,      weight: 0.55, evidence: 'Adobe Analytics s_code/AppMeasurement script' },
+        { source: 'resourceUrls',  regex: /omtrdc\.net|2o7\.net/i,               weight: 0.55, evidence: 'Adobe Analytics collection endpoint' },
+        { source: 'html',          regex: /omniture|appmeasurement/i,            weight: 0.35, evidence: 'Adobe Analytics reference in HTML' },
+        { source: 'globals',       regex: /\bs_gi\b/,                            weight: 0.45, evidence: 'Adobe Analytics s_gi function' },
+      ],
+      requiredMatches: 1,
+    },
   ];
 })();

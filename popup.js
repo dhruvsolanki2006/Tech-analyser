@@ -1,12 +1,13 @@
 /**
- * TechStack Detector — Popup Script
+ * CyberScope — Popup Script (High Accuracy & Deep Inspection Display)
  *
  * Handles:
- *  • Scan initiation and result polling
- *  • Rendering detected technologies with confidence badges
- *  • Search / filter with debounce
- *  • Loading skeleton management
- *  • Animated card rendering
+ *  • Scan initiation and storage polling
+ *  • Rendering detected technologies with confidence badges & version tags
+ *  • Rendering Deep Inspection Insights (Tracking IDs, Build IDs, WP Plugins/Themes)
+ *  • Rendering Security Headers Posture Audit card
+ *  • Debounced search & filtering
+ *  • Copy-to-clipboard for tracking IDs
  */
 (() => {
   'use strict';
@@ -29,21 +30,25 @@
 
   /* ── Category metadata ───────────────────────────────────────────── */
   const CATEGORY_META = {
-    frontend:  { label: 'Frontend Frameworks',            icon: '🖥️' },
-    libraries: { label: 'JavaScript Libraries',           icon: '📚' },
-    cms:       { label: 'CMS / Commerce',                 icon: '📝' },
-    backend:   { label: 'Backend Frameworks (Inferred)',   icon: '⚙️' },
-    webserver: { label: 'Web Servers',                     icon: '🌐' },
-    hosting:   { label: 'Hosting',                         icon: '☁️' },
-    cdn:       { label: 'CDN',                             icon: '🚀' },
-    analytics: { label: 'Analytics & Tracking',            icon: '📊' },
-    security:  { label: 'Security & Monitoring',           icon: '🛡️' },
-    payments:  { label: 'Payments',                        icon: '💳' },
+    frontend:    { label: 'Frontend Frameworks',            icon: '🖥️' },
+    libraries:   { label: 'JavaScript Libraries',           icon: '📚' },
+    cms:         { label: 'CMS / Commerce',                 icon: '📝' },
+    backend:     { label: 'Backend Frameworks (Inferred)',   icon: '⚙️' },
+    webserver:   { label: 'Web Servers',                     icon: '🌐' },
+    hosting:     { label: 'Hosting',                         icon: '☁️' },
+    cdn:         { label: 'CDN',                             icon: '🚀' },
+    analytics:   { label: 'Analytics & Tracking',            icon: '📊' },
+    security:    { label: 'Security & Monitoring',           icon: '🛡️' },
+    payments:    { label: 'Payments',                        icon: '💳' },
+    fonts:       { label: 'Fonts & Icons',                   icon: '🔤' },
+    tagmanagers: { label: 'Tag Managers & Consent',         icon: '🏷️' },
+    marketing:   { label: 'Marketing & Chat',               icon: '💬' },
   };
 
   const CATEGORY_ORDER = [
     'frontend', 'libraries', 'cms', 'backend', 'webserver',
     'hosting', 'cdn', 'analytics', 'security', 'payments',
+    'fonts', 'tagmanagers', 'marketing'
   ];
 
   /* ── Utilities ───────────────────────────────────────────────────── */
@@ -111,6 +116,7 @@
     const groups = result?.groups || {};
     const categoryCounts = result?.categoryCounts || {};
     const totalDetected  = result?.totalDetected ?? 0;
+    const securityAudit  = result?.securityAudit || null;
     const filter = filterText.toLowerCase().trim();
 
     /* Summary text */
@@ -131,7 +137,6 @@
     /* Build category cards */
     let html = '';
     let delay = 0;
-    let visibleCount = 0;
 
     for (const catKey of CATEGORY_ORDER) {
       let items = groups[catKey] || [];
@@ -141,12 +146,12 @@
       if (filter) {
         items = items.filter(item =>
           item.name.toLowerCase().includes(filter) ||
-          (item.evidence || []).some(e => e.toLowerCase().includes(filter))
+          (item.evidence || []).some(e => e.toLowerCase().includes(filter)) ||
+          (item.details || []).some(d => d.toLowerCase().includes(filter))
         );
       }
       if (!items.length) continue;
 
-      visibleCount += items.length;
       const meta = CATEGORY_META[catKey] || { label: catKey, icon: '🔹' };
       const isBackend = catKey === 'backend';
 
@@ -156,6 +161,10 @@
             <span class="evidence-bullet">●</span>
             <span>${escapeHtml(e)}</span>
           </div>`)
+          .join('');
+
+        const detailsChips = (item.details || [])
+          .map(d => `<span class="detail-chip" title="Extracted Deep Insight">${escapeHtml(d)}</span>`)
           .join('');
 
         const versionTag = item.version
@@ -175,6 +184,7 @@
             </div>
             ${confBadge(item.confidence)}
           </div>
+          ${detailsChips ? `<div class="tech-details-chips">${detailsChips}</div>` : ''}
           ${evidence ? `<div class="tech-evidence">${evidence}</div>` : ''}
           ${impliedTag}
         </div>`;
@@ -197,6 +207,35 @@
       </article>`;
 
       delay += 60;
+    }
+
+    /* Security Headers Audit Card */
+    if (securityAudit && !filter) {
+      const { scorePct, passedCount, totalCount, checks } = securityAudit;
+      let badgeClass = 'sec-low';
+      if (scorePct >= 70) badgeClass = 'sec-high';
+      else if (scorePct >= 40) badgeClass = 'sec-med';
+
+      const checkItems = checks.map(c => `
+        <div class="sec-check-item ${c.present ? 'pass' : 'fail'}">
+          <span class="sec-check-icon">${c.present ? '✓' : '✕'}</span>
+          <span class="sec-check-label">${escapeHtml(c.label)}</span>
+          ${c.detail ? `<span class="sec-check-detail">${escapeHtml(c.detail)}</span>` : ''}
+        </div>
+      `).join('');
+
+      html += `<article class="category-card sec-audit-card" style="animation-delay: ${delay}ms">
+        <div class="category-header">
+          <div class="category-left">
+            <span class="category-icon">🛡️</span>
+            <span class="category-title">Security Headers Audit</span>
+          </div>
+          <span class="sec-score-badge ${badgeClass}">${passedCount}/${totalCount} (${scorePct}%)</span>
+        </div>
+        <div class="sec-audit-body">
+          ${checkItems}
+        </div>
+      </article>`;
     }
 
     if (!html && filter) {
@@ -246,7 +285,7 @@
       scanBtn.disabled = true;
       setStatus('Scanning…', 'scanning');
       showSkeleton();
-      summaryEl.textContent = 'Analyzing the current page…';
+      summaryEl.textContent = 'Analyzing deep page signals & response headers…';
 
       const tab = await getActiveTab();
       if (!tab?.id || !tab?.url) {

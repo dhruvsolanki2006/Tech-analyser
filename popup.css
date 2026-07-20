@@ -583,6 +583,103 @@ h1 {
   font-size: 12px;
 }
 
+/* ── Deep Inspection Chips & Security Audit ───────────────────────── */
+.tech-details-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.detail-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.10);
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  word-break: break-all;
+}
+
+.sec-audit-card {
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.sec-score-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+.sec-high {
+  color: var(--conf-high);
+  background: var(--conf-high-bg);
+}
+.sec-med {
+  color: var(--conf-med);
+  background: var(--conf-med-bg);
+}
+.sec-low {
+  color: var(--conf-low);
+  background: var(--conf-low-bg);
+}
+
+.sec-audit-body {
+  padding: 8px 12px 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.sec-check-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--glass-bg);
+  border: 1px solid var(--border);
+}
+
+.sec-check-item.pass {
+  border-color: rgba(34, 197, 94, 0.20);
+}
+.sec-check-item.pass .sec-check-icon {
+  color: var(--conf-high);
+}
+
+.sec-check-item.fail {
+  opacity: 0.6;
+}
+.sec-check-item.fail .sec-check-icon {
+  color: var(--conf-low);
+}
+
+.sec-check-label {
+  flex: 1;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.sec-check-detail {
+  font-size: 10px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  color: var(--text-muted);
+  background: var(--bg-input);
+  padding: 1px 5px;
+  border-radius: 4px;
+  max-width: 140px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* ── Footer ────────────────────────────────────────────────────────── */
 .footer {
   display: flex;

@@ -176,5 +176,145 @@
       ],
       requiredMatches: 2,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Contentful ────────────────────────────────────────────────── */
+    {
+      name: 'Contentful',
+      icon: '📋',
+      patterns: [
+        { source: 'resourceUrls', regex: /images\.ctfassets\.net/,             weight: 0.55, evidence: 'Contentful ctfassets.net image CDN' },
+        { source: 'resourceUrls', regex: /cdn\.contentful\.com/,              weight: 0.55, evidence: 'Contentful CDN domain' },
+        { source: 'html',         regex: /ctfassets\.net/,                     weight: 0.40, evidence: 'Contentful asset reference in HTML' },
+        { source: 'scriptContents', regex: /contentful/i,                      weight: 0.25, evidence: 'Contentful in inline scripts' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Strapi ────────────────────────────────────────────────────── */
+    {
+      name: 'Strapi',
+      icon: '🚀',
+      patterns: [
+        { source: 'resourceUrls', regex: /\/uploads\/.*strapi/i,              weight: 0.45, evidence: 'Strapi uploads path' },
+        { source: 'html',         regex: /powered-by-strapi|strapi/i,         weight: 0.35, evidence: 'Strapi reference in page' },
+        { source: 'headers',      regex: /x-powered-by:\s*strapi/i,           weight: 0.55, evidence: 'X-Powered-By: Strapi header' },
+        { source: 'resourceUrls', regex: /\/api\/.*\?populate/,               weight: 0.25, evidence: 'Strapi API query pattern' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Sanity ────────────────────────────────────────────────────── */
+    {
+      name: 'Sanity',
+      icon: '🔴',
+      patterns: [
+        { source: 'resourceUrls', regex: /cdn\.sanity\.io/,                    weight: 0.55, evidence: 'Sanity CDN resources loaded' },
+        { source: 'resourceUrls', regex: /apicdn\.sanity\.io/,                weight: 0.55, evidence: 'Sanity API CDN resources' },
+        { source: 'html',         regex: /cdn\.sanity\.io/,                    weight: 0.40, evidence: 'Sanity CDN reference in HTML' },
+        { source: 'scriptContents', regex: /sanity/i,                          weight: 0.20, evidence: 'Sanity in inline scripts' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Prismic ───────────────────────────────────────────────────── */
+    {
+      name: 'Prismic',
+      icon: '🟣',
+      patterns: [
+        { source: 'resourceUrls', regex: /images\.prismic\.io/,               weight: 0.55, evidence: 'Prismic images CDN' },
+        { source: 'resourceUrls', regex: /prismic\.io\/api/,                  weight: 0.50, evidence: 'Prismic API endpoint' },
+        { source: 'html',         regex: /prismic\.io/,                        weight: 0.35, evidence: 'Prismic reference in HTML' },
+        { source: 'scriptSrcs',   regex: /prismic/i,                           weight: 0.40, evidence: 'Prismic script loaded' },
+        { source: 'globals',      regex: /\bprismic\b/,                        weight: 0.45, evidence: 'window.prismic global' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Craft CMS ─────────────────────────────────────────────────── */
+    {
+      name: 'Craft CMS',
+      icon: '🔨',
+      patterns: [
+        { source: 'metaTags',     regex: /generator[^>]*craft\s?cms/i,        weight: 0.55, evidence: '<meta name="generator"> says Craft CMS' },
+        { source: 'html',         regex: /\/cpresources\//,                    weight: 0.40, evidence: 'Craft CMS cpresources path' },
+        { source: 'cookies',      regex: /\bCraftSessionId\b/,                weight: 0.50, evidence: 'CraftSessionId cookie' },
+        { source: 'headers',      regex: /x-powered-by:\s*craft cms/i,        weight: 0.55, evidence: 'X-Powered-By: Craft CMS header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── PrestaShop ────────────────────────────────────────────────── */
+    {
+      name: 'PrestaShop',
+      icon: '🛒',
+      patterns: [
+        { source: 'metaTags',     regex: /generator[^>]*prestashop/i,         weight: 0.55, evidence: '<meta name="generator"> says PrestaShop' },
+        { source: 'html',         regex: /prestashop/i,                        weight: 0.25, evidence: 'PrestaShop reference in page' },
+        { source: 'cookies',      regex: /\bPrestaShop/,                       weight: 0.50, evidence: 'PrestaShop session cookie' },
+        { source: 'scriptSrcs',   regex: /\/modules\/.*prestashop/i,          weight: 0.40, evidence: 'PrestaShop modules script path' },
+        { source: 'resourceUrls', regex: /\/themes\/.*prestashop|\/modules\//i, weight: 0.30, evidence: 'PrestaShop themes/modules path' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── BigCommerce ───────────────────────────────────────────────── */
+    {
+      name: 'BigCommerce',
+      icon: '🛒',
+      patterns: [
+        { source: 'resourceUrls', regex: /cdn\d+\.bigcommerce\.com/,          weight: 0.55, evidence: 'BigCommerce CDN resources' },
+        { source: 'html',         regex: /bigcommerce/i,                       weight: 0.25, evidence: 'BigCommerce reference in page' },
+        { source: 'scriptSrcs',   regex: /bigcommerce\.com/i,                 weight: 0.50, evidence: 'Script from bigcommerce.com' },
+        { source: 'headers',      regex: /x-bc-/i,                            weight: 0.50, evidence: 'BigCommerce X-BC-* headers' },
+        { source: 'html',         regex: /data-product-/,                      weight: 0.15, evidence: 'BigCommerce product data attributes' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Blogger ───────────────────────────────────────────────────── */
+    {
+      name: 'Blogger',
+      icon: '📰',
+      patterns: [
+        { source: 'metaTags',     regex: /generator[^>]*blogger/i,             weight: 0.55, evidence: '<meta name="generator"> says Blogger' },
+        { source: 'resourceUrls', regex: /blogger\.googleusercontent\.com/,   weight: 0.50, evidence: 'Blogger image CDN' },
+        { source: 'resourceUrls', regex: /\.blogspot\.com/,                    weight: 0.50, evidence: '.blogspot.com resources' },
+        { source: 'html',         regex: /blogspot\.com/,                      weight: 0.35, evidence: 'blogspot.com reference' },
+        { source: 'html',         regex: /class="post-body"/,                  weight: 0.30, evidence: 'Blogger post-body class' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Weebly ────────────────────────────────────────────────────── */
+    {
+      name: 'Weebly',
+      icon: '🌐',
+      patterns: [
+        { source: 'resourceUrls', regex: /cdn\d*\.editmysite\.com/,           weight: 0.55, evidence: 'Weebly editmysite.com CDN' },
+        { source: 'html',         regex: /weebly/i,                            weight: 0.30, evidence: 'Weebly reference in page' },
+        { source: 'scriptSrcs',   regex: /weebly|editmysite\.com/i,           weight: 0.50, evidence: 'Weebly/editmysite script loaded' },
+        { source: 'html',         regex: /class="wsite-/,                      weight: 0.45, evidence: 'Weebly wsite- prefixed classes' },
+        { source: 'metaTags',     regex: /generator[^>]*weebly/i,             weight: 0.55, evidence: '<meta name="generator"> says Weebly' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Notion (Public Sites) ─────────────────────────────────────── */
+    {
+      name: 'Notion',
+      icon: '📓',
+      patterns: [
+        { source: 'resourceUrls', regex: /notion\.so/,                         weight: 0.45, evidence: 'notion.so resources loaded' },
+        { source: 'html',         regex: /notion-app/,                          weight: 0.50, evidence: 'Notion app container' },
+        { source: 'html',         regex: /notion-page-content/,                weight: 0.50, evidence: 'Notion page content element' },
+        { source: 'resourceUrls', regex: /www\.notion\.so\/image/,             weight: 0.45, evidence: 'Notion image CDN path' },
+        { source: 'html',         regex: /super\.so/,                          weight: 0.35, evidence: 'Super.so (Notion site wrapper)' },
+      ],
+      requiredMatches: 2,
+    },
   ];
 })();

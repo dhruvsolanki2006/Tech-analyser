@@ -105,11 +105,19 @@
       name: 'GSAP',
       icon: '🎬',
       patterns: [
-        { source: 'globals',      regex: /\bgsap\b/,                           weight: 0.55, evidence: 'window.gsap global present' },
-        { source: 'globals',      regex: /\bTweenMax\b/,                       weight: 0.45, evidence: 'window.TweenMax global (GSAP v2)' },
-        { source: 'scriptSrcs',   regex: /gsap(?:\.min)?\.js/i,               weight: 0.50, evidence: 'GSAP script loaded' },
-        { source: 'resourceUrls', regex: /gsap(?:\.min)?\.js/i,               weight: 0.35, evidence: 'GSAP in resource URLs' },
-        { source: 'html',         regex: /gsap(?:\.min)?\.js/i,               weight: 0.40, evidence: 'GSAP script reference in HTML' },
+        { source: 'globals',        regex: /\bgsap\b/,                                          weight: 0.55, evidence: 'window.gsap global present' },
+        { source: 'globals',        regex: /\bTweenMax\b/,                                      weight: 0.45, evidence: 'window.TweenMax global (GSAP v2)' },
+        { source: 'globals',        regex: /\bTweenLite\b/,                                     weight: 0.45, evidence: 'window.TweenLite global (GSAP v2)' },
+        { source: 'globals',        regex: /\bScrollTrigger\b/,                                  weight: 0.45, evidence: 'window.ScrollTrigger global (GSAP plugin)' },
+        { source: 'scriptSrcs',     regex: /gsap(?:\.min)?\.js/i,                               weight: 0.50, evidence: 'GSAP script loaded' },
+        { source: 'scriptSrcs',     regex: /\/gsap(?:@[\d.]+)?(?:\/dist)?\/?/i,                  weight: 0.45, evidence: 'GSAP CDN package path in script' },
+        { source: 'scriptSrcs',     regex: /ScrollTrigger(?:\.min)?\.js/i,                       weight: 0.45, evidence: 'GSAP ScrollTrigger plugin loaded' },
+        { source: 'resourceUrls',   regex: /gsap(?:\.min)?\.js|\/gsap(?:@[\d.]+)?\/?/i,          weight: 0.35, evidence: 'GSAP in resource URLs' },
+        { source: 'html',           regex: /gsap(?:\.min)?\.js|\/gsap(?:@[\d.]+)?\/?/i,          weight: 0.40, evidence: 'GSAP script reference in HTML' },
+        { source: 'scriptContents', regex: /gsap\.registerPlugin|gsap\.to\(|gsap\.from\(|gsap\.timeline\(/i, weight: 0.50, evidence: 'GSAP API calls in inline scripts' },
+        { source: 'scriptContents', regex: /ScrollTrigger\.create|ScrollTrigger\.defaults/i,     weight: 0.40, evidence: 'GSAP ScrollTrigger API in inline scripts' },
+        { source: 'scriptContents', regex: /TweenMax\.to\(|TweenLite\.to\(/i,                    weight: 0.40, evidence: 'GSAP v2 TweenMax/TweenLite API calls' },
+        { source: 'html',           regex: /data-gsap|data-scroll-trigger/i,                     weight: 0.35, evidence: 'GSAP-related data attributes in HTML' },
       ],
       requiredMatches: 1,
     },
@@ -275,6 +283,279 @@
         { source: 'html',         regex: /data-main=/,                         weight: 0.40, evidence: 'data-main attribute (RequireJS entry)' },
       ],
       requiredMatches: 2,
+    },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Underscore.js ─────────────────────────────────────────────── */
+    {
+      name: 'Underscore.js',
+      icon: '🔧',
+      patterns: [
+        { source: 'scriptSrcs',   regex: /underscore(?:\.min)?\.js/i,          weight: 0.55, evidence: 'Underscore.js script loaded' },
+        { source: 'resourceUrls', regex: /underscore(?:\.min)?\.js/i,          weight: 0.40, evidence: 'Underscore.js in resource URLs' },
+        { source: 'scriptContents', regex: /Underscore\.VERSION/,              weight: 0.45, evidence: 'Underscore.VERSION string in code' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Backbone.js ───────────────────────────────────────────────── */
+    {
+      name: 'Backbone.js',
+      icon: '🦴',
+      patterns: [
+        { source: 'globals',      regex: /\bBackbone\b/,                       weight: 0.55, evidence: 'window.Backbone global present' },
+        { source: 'scriptSrcs',   regex: /backbone(?:\.min)?\.js/i,            weight: 0.50, evidence: 'Backbone.js script loaded' },
+        { source: 'resourceUrls', regex: /backbone(?:\.min)?\.js/i,            weight: 0.35, evidence: 'Backbone.js in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Knockout.js ───────────────────────────────────────────────── */
+    {
+      name: 'Knockout.js',
+      icon: '🥊',
+      patterns: [
+        { source: 'globals',      regex: /\bko\b/,                             weight: 0.40, evidence: 'window.ko global present' },
+        { source: 'scriptSrcs',   regex: /knockout(?:\.min)?\.js/i,            weight: 0.55, evidence: 'Knockout.js script loaded' },
+        { source: 'html',         regex: /data-bind="/,                        weight: 0.40, evidence: 'Knockout data-bind attribute' },
+        { source: 'resourceUrls', regex: /knockout/i,                          weight: 0.30, evidence: 'Knockout in resource URLs' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── RxJS ──────────────────────────────────────────────────────── */
+    {
+      name: 'RxJS',
+      icon: '🔄',
+      patterns: [
+        { source: 'scriptSrcs',   regex: /rxjs(?:\.min)?\.js/i,                weight: 0.55, evidence: 'RxJS script loaded' },
+        { source: 'resourceUrls', regex: /rxjs/i,                              weight: 0.35, evidence: 'RxJS in resource URLs' },
+        { source: 'scriptContents', regex: /rxjs|Observable\.subscribe/i,      weight: 0.30, evidence: 'RxJS or Observable.subscribe in code' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Lottie ────────────────────────────────────────────────────── */
+    {
+      name: 'Lottie',
+      icon: '🎬',
+      patterns: [
+        { source: 'globals',      regex: /\blottie\b/,                         weight: 0.50, evidence: 'window.lottie global present' },
+        { source: 'globals',      regex: /\bbodymovin\b/,                      weight: 0.50, evidence: 'window.bodymovin global present' },
+        { source: 'scriptSrcs',   regex: /lottie(?:\.min)?\.js|bodymovin/i,    weight: 0.50, evidence: 'Lottie/bodymovin script loaded' },
+        { source: 'resourceUrls', regex: /lottie|bodymovin/i,                  weight: 0.35, evidence: 'Lottie/bodymovin in resources' },
+        { source: 'html',         regex: /lottie-player|dotlottie-player/i,    weight: 0.50, evidence: 'Lottie player custom element' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Highcharts ────────────────────────────────────────────────── */
+    {
+      name: 'Highcharts',
+      icon: '📊',
+      patterns: [
+        { source: 'globals',      regex: /\bHighcharts\b/,                     weight: 0.55, evidence: 'window.Highcharts global present' },
+        { source: 'scriptSrcs',   regex: /highcharts(?:\.min)?\.js/i,          weight: 0.55, evidence: 'Highcharts script loaded' },
+        { source: 'resourceUrls', regex: /highcharts/i,                        weight: 0.35, evidence: 'Highcharts in resource URLs' },
+        { source: 'html',         regex: /class="highcharts-/,                 weight: 0.40, evidence: 'Highcharts CSS classes in DOM' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Leaflet ───────────────────────────────────────────────────── */
+    {
+      name: 'Leaflet',
+      icon: '🗺️',
+      patterns: [
+        { source: 'globals',      regex: /\bL\b/,                              weight: 0.20, evidence: 'window.L global (Leaflet)' },
+        { source: 'scriptSrcs',   regex: /leaflet(?:\.min)?\.js/i,             weight: 0.55, evidence: 'Leaflet script loaded' },
+        { source: 'linkHrefs',    regex: /leaflet(?:\.min)?\.css/i,            weight: 0.50, evidence: 'Leaflet CSS loaded' },
+        { source: 'html',         regex: /class="leaflet-/,                    weight: 0.50, evidence: 'Leaflet CSS classes in DOM' },
+        { source: 'resourceUrls', regex: /leaflet/i,                           weight: 0.30, evidence: 'Leaflet in resource URLs' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Mapbox GL JS ──────────────────────────────────────────────── */
+    {
+      name: 'Mapbox GL',
+      icon: '🗺️',
+      patterns: [
+        { source: 'globals',      regex: /\bmapboxgl\b/,                       weight: 0.55, evidence: 'window.mapboxgl global present' },
+        { source: 'scriptSrcs',   regex: /mapbox-gl(?:\.min)?\.js/i,           weight: 0.55, evidence: 'Mapbox GL JS script loaded' },
+        { source: 'linkHrefs',    regex: /mapbox-gl(?:\.min)?\.css/i,          weight: 0.45, evidence: 'Mapbox GL CSS loaded' },
+        { source: 'resourceUrls', regex: /api\.mapbox\.com/i,                  weight: 0.45, evidence: 'Mapbox API in resource URLs' },
+        { source: 'html',         regex: /class="mapboxgl-/,                   weight: 0.45, evidence: 'Mapbox GL CSS classes in DOM' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Hammer.js ─────────────────────────────────────────────────── */
+    {
+      name: 'Hammer.js',
+      icon: '🔨',
+      patterns: [
+        { source: 'globals',      regex: /\bHammer\b/,                         weight: 0.50, evidence: 'window.Hammer global present' },
+        { source: 'scriptSrcs',   regex: /hammer(?:\.min)?\.js/i,              weight: 0.55, evidence: 'Hammer.js script loaded' },
+        { source: 'resourceUrls', regex: /hammer(?:\.min)?\.js/i,              weight: 0.35, evidence: 'Hammer.js in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Popper.js / Floating UI ───────────────────────────────────── */
+    {
+      name: 'Popper.js',
+      icon: '📌',
+      patterns: [
+        { source: 'globals',      regex: /\bPopper\b/,                         weight: 0.45, evidence: 'window.Popper global present' },
+        { source: 'scriptSrcs',   regex: /popper(?:\.min)?\.js/i,              weight: 0.50, evidence: 'Popper.js script loaded' },
+        { source: 'scriptSrcs',   regex: /@floating-ui/i,                      weight: 0.50, evidence: 'Floating UI (Popper successor) loaded' },
+        { source: 'resourceUrls', regex: /popper|@floating-ui/i,               weight: 0.35, evidence: 'Popper/Floating UI in resources' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── SortableJS ────────────────────────────────────────────────── */
+    {
+      name: 'SortableJS',
+      icon: '↕️',
+      patterns: [
+        { source: 'globals',      regex: /\bSortable\b/,                       weight: 0.45, evidence: 'window.Sortable global present' },
+        { source: 'scriptSrcs',   regex: /Sortable(?:\.min)?\.js|sortablejs/i, weight: 0.55, evidence: 'SortableJS script loaded' },
+        { source: 'resourceUrls', regex: /sortablejs|Sortable(?:\.min)?\.js/i, weight: 0.35, evidence: 'SortableJS in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Masonry ───────────────────────────────────────────────────── */
+    {
+      name: 'Masonry',
+      icon: '🧱',
+      patterns: [
+        { source: 'globals',      regex: /\bMasonry\b/,                        weight: 0.50, evidence: 'window.Masonry global present' },
+        { source: 'scriptSrcs',   regex: /masonry(?:\.pkgd)?(?:\.min)?\.js/i,  weight: 0.55, evidence: 'Masonry script loaded' },
+        { source: 'resourceUrls', regex: /masonry/i,                           weight: 0.30, evidence: 'Masonry in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Prism.js ──────────────────────────────────────────────────── */
+    {
+      name: 'Prism.js',
+      icon: '🌈',
+      patterns: [
+        { source: 'globals',      regex: /\bPrism\b/,                          weight: 0.45, evidence: 'window.Prism global present' },
+        { source: 'scriptSrcs',   regex: /prism(?:\.min)?\.js/i,               weight: 0.55, evidence: 'Prism.js script loaded' },
+        { source: 'linkHrefs',    regex: /prism(?:\.min)?\.css/i,              weight: 0.45, evidence: 'Prism.js CSS loaded' },
+        { source: 'html',         regex: /class="language-[a-z]+"/,            weight: 0.25, evidence: 'Prism language-* class on code blocks' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── highlight.js ──────────────────────────────────────────────── */
+    {
+      name: 'highlight.js',
+      icon: '🖍️',
+      patterns: [
+        { source: 'globals',      regex: /\bhljs\b/,                           weight: 0.55, evidence: 'window.hljs global present' },
+        { source: 'scriptSrcs',   regex: /highlight(?:\.min)?\.js/i,           weight: 0.50, evidence: 'highlight.js script loaded' },
+        { source: 'linkHrefs',    regex: /highlight\.js.*\.css/i,              weight: 0.40, evidence: 'highlight.js CSS theme loaded' },
+        { source: 'html',         regex: /class="hljs/,                        weight: 0.45, evidence: 'hljs class on code blocks' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Turbolinks ────────────────────────────────────────────────── */
+    {
+      name: 'Turbolinks',
+      icon: '🔗',
+      patterns: [
+        { source: 'globals',      regex: /\bTurbolinks\b/,                     weight: 0.55, evidence: 'window.Turbolinks global present' },
+        { source: 'scriptSrcs',   regex: /turbolinks(?:\.min)?\.js/i,          weight: 0.50, evidence: 'Turbolinks script loaded' },
+        { source: 'html',         regex: /data-turbolinks-/,                   weight: 0.40, evidence: 'data-turbolinks-* attribute' },
+        { source: 'metaTags',     regex: /turbolinks/i,                        weight: 0.30, evidence: 'Turbolinks meta tag' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Barba.js ──────────────────────────────────────────────────── */
+    {
+      name: 'Barba.js',
+      icon: '🎭',
+      patterns: [
+        { source: 'globals',      regex: /\bbarba\b/,                          weight: 0.50, evidence: 'window.barba global present' },
+        { source: 'scriptSrcs',   regex: /barba(?:\.min)?\.js/i,               weight: 0.55, evidence: 'Barba.js script loaded' },
+        { source: 'html',         regex: /data-barba/,                         weight: 0.50, evidence: 'data-barba attribute found' },
+        { source: 'resourceUrls', regex: /@barba\/core/i,                      weight: 0.45, evidence: '@barba/core in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── ScrollReveal ──────────────────────────────────────────────── */
+    {
+      name: 'ScrollReveal',
+      icon: '👁️',
+      patterns: [
+        { source: 'globals',      regex: /\bScrollReveal\b/,                   weight: 0.55, evidence: 'window.ScrollReveal global present' },
+        { source: 'scriptSrcs',   regex: /scrollreveal(?:\.min)?\.js/i,        weight: 0.55, evidence: 'ScrollReveal script loaded' },
+        { source: 'resourceUrls', regex: /scrollreveal/i,                      weight: 0.35, evidence: 'ScrollReveal in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── AOS (Animate On Scroll) ───────────────────────────────────── */
+    {
+      name: 'AOS',
+      icon: '📜',
+      patterns: [
+        { source: 'globals',      regex: /\bAOS\b/,                            weight: 0.40, evidence: 'window.AOS global present' },
+        { source: 'html',         regex: /data-aos="/,                         weight: 0.50, evidence: 'data-aos attribute on elements' },
+        { source: 'scriptSrcs',   regex: /aos(?:\.min)?\.js/i,                 weight: 0.50, evidence: 'AOS script loaded' },
+        { source: 'linkHrefs',    regex: /aos(?:\.min)?\.css/i,                weight: 0.40, evidence: 'AOS CSS loaded' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Typed.js ──────────────────────────────────────────────────── */
+    {
+      name: 'Typed.js',
+      icon: '⌨️',
+      patterns: [
+        { source: 'globals',      regex: /\bTyped\b/,                          weight: 0.45, evidence: 'window.Typed global present' },
+        { source: 'scriptSrcs',   regex: /typed(?:\.min)?\.js/i,               weight: 0.55, evidence: 'Typed.js script loaded' },
+        { source: 'resourceUrls', regex: /typed(?:\.min)?\.js/i,               weight: 0.35, evidence: 'Typed.js in resource URLs' },
+        { source: 'html',         regex: /class="typed-cursor"/,               weight: 0.40, evidence: 'Typed.js cursor element' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Particles.js / tsParticles ────────────────────────────────── */
+    {
+      name: 'Particles.js',
+      icon: '✨',
+      patterns: [
+        { source: 'globals',      regex: /\bparticlesJS\b/,                    weight: 0.55, evidence: 'window.particlesJS global present' },
+        { source: 'globals',      regex: /\btsParticles\b/,                    weight: 0.55, evidence: 'window.tsParticles global present' },
+        { source: 'scriptSrcs',   regex: /particles(?:\.min)?\.js|tsparticles/i, weight: 0.50, evidence: 'Particles.js/tsParticles script loaded' },
+        { source: 'html',         regex: /id="particles-js"/,                  weight: 0.45, evidence: 'particles-js container element' },
+        { source: 'resourceUrls', regex: /particles|tsparticles/i,             weight: 0.30, evidence: 'Particles in resource URLs' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Marked (Markdown Parser) ──────────────────────────────────── */
+    {
+      name: 'Marked',
+      icon: '📝',
+      patterns: [
+        { source: 'globals',      regex: /\bmarked\b/,                         weight: 0.45, evidence: 'window.marked global present' },
+        { source: 'scriptSrcs',   regex: /marked(?:\.min)?\.js/i,              weight: 0.55, evidence: 'Marked script loaded' },
+        { source: 'resourceUrls', regex: /marked(?:\.min)?\.js/i,              weight: 0.35, evidence: 'Marked in resource URLs' },
+      ],
+      requiredMatches: 1,
     },
   ];
 })();

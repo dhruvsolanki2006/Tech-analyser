@@ -102,5 +102,98 @@
       ],
       requiredMatches: 1,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── StackPath / MaxCDN ────────────────────────────────────────── */
+    {
+      name: 'StackPath',
+      icon: '📡',
+      patterns: [
+        { source: 'headers',      regex: /x-hw:/i,                             weight: 0.55, evidence: 'X-HW header (StackPath/Highwinds)' },
+        { source: 'resourceUrls', regex: /\.stackpathdns\.com/,                weight: 0.55, evidence: '.stackpathdns.com domain' },
+        { source: 'resourceUrls', regex: /\.netdna-cdn\.com/,                  weight: 0.50, evidence: '.netdna-cdn.com (MaxCDN/StackPath)' },
+        { source: 'headers',      regex: /server:\s*netdna/i,                  weight: 0.50, evidence: 'Server: NetDNA header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── KeyCDN ────────────────────────────────────────────────────── */
+    {
+      name: 'KeyCDN',
+      icon: '🔑',
+      patterns: [
+        { source: 'resourceUrls', regex: /\.kxcdn\.com/,                       weight: 0.55, evidence: '.kxcdn.com domain (KeyCDN)' },
+        { source: 'headers',      regex: /server:\s*keycdn/i,                  weight: 0.55, evidence: 'Server: KeyCDN header' },
+        { source: 'headers',      regex: /x-edge-location/i,                   weight: 0.35, evidence: 'X-Edge-Location header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Google Cloud CDN ──────────────────────────────────────────── */
+    {
+      name: 'Google Cloud CDN',
+      icon: '☁️',
+      patterns: [
+        { source: 'headers',      regex: /via:\s*1\.1 google/i,                weight: 0.45, evidence: 'Via: 1.1 google header' },
+        { source: 'headers',      regex: /x-goog-/i,                           weight: 0.45, evidence: 'X-Goog-* header' },
+        { source: 'resourceUrls', regex: /\.storage\.googleapis\.com/,         weight: 0.50, evidence: 'Google Cloud Storage domain' },
+        { source: 'headers',      regex: /server:\s*gse|gws/i,                weight: 0.35, evidence: 'Server: GSE/GWS (Google)' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Sucuri ────────────────────────────────────────────────────── */
+    {
+      name: 'Sucuri',
+      icon: '🛡️',
+      patterns: [
+        { source: 'headers',      regex: /x-sucuri-id/i,                       weight: 0.55, evidence: 'X-Sucuri-ID header' },
+        { source: 'headers',      regex: /server:\s*sucuri/i,                  weight: 0.55, evidence: 'Server: Sucuri header' },
+        { source: 'headers',      regex: /x-sucuri-cache/i,                    weight: 0.50, evidence: 'X-Sucuri-Cache header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Imperva / Incapsula ───────────────────────────────────────── */
+    {
+      name: 'Imperva',
+      icon: '🔒',
+      patterns: [
+        { source: 'headers',      regex: /x-iinfo:/i,                          weight: 0.55, evidence: 'X-Iinfo header (Imperva/Incapsula)' },
+        { source: 'headers',      regex: /x-cdn:\s*incapsula/i,               weight: 0.55, evidence: 'X-CDN: Incapsula header' },
+        { source: 'cookies',      regex: /\bvisid_incap_/,                     weight: 0.50, evidence: 'Incapsula visitor cookie' },
+        { source: 'cookies',      regex: /\bincap_ses_/,                       weight: 0.50, evidence: 'Incapsula session cookie' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── cdnjs (Cloudflare) ────────────────────────────────────────── */
+    {
+      name: 'cdnjs',
+      icon: '📦',
+      patterns: [
+        { source: 'resourceUrls', regex: /cdnjs\.cloudflare\.com/,            weight: 0.55, evidence: 'cdnjs.cloudflare.com resources' },
+        { source: 'scriptSrcs',   regex: /cdnjs\.cloudflare\.com/,            weight: 0.50, evidence: 'Script from cdnjs.cloudflare.com' },
+        { source: 'linkHrefs',    regex: /cdnjs\.cloudflare\.com/,            weight: 0.45, evidence: 'Stylesheet from cdnjs.cloudflare.com' },
+        { source: 'html',         regex: /cdnjs\.cloudflare\.com/,            weight: 0.40, evidence: 'cdnjs reference in HTML' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── unpkg ─────────────────────────────────────────────────────── */
+    {
+      name: 'unpkg',
+      icon: '📦',
+      patterns: [
+        { source: 'resourceUrls', regex: /unpkg\.com/,                         weight: 0.55, evidence: 'unpkg.com resources loaded' },
+        { source: 'scriptSrcs',   regex: /unpkg\.com/,                         weight: 0.50, evidence: 'Script from unpkg.com' },
+        { source: 'linkHrefs',    regex: /unpkg\.com/,                         weight: 0.45, evidence: 'Stylesheet from unpkg.com' },
+        { source: 'html',         regex: /unpkg\.com/,                         weight: 0.40, evidence: 'unpkg.com reference in HTML' },
+      ],
+      requiredMatches: 1,
+    },
   ];
 })();

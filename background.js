@@ -26,6 +26,9 @@ const DETECTOR_FILES = [
   'detectors/analytics.js',
   'detectors/security.js',
   'detectors/payments.js',
+  'detectors/fonts.js',
+  'detectors/tagmanagers.js',
+  'detectors/marketing.js',
   'scanEngine.js',
   'content.js',
 ];

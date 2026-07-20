@@ -171,5 +171,132 @@
       ],
       requiredMatches: 1,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Koa.js ────────────────────────────────────────────────────── */
+    {
+      name: 'Koa.js',
+      icon: '🟢',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-powered-by:\s*koa/i,               weight: 0.55, evidence: 'X-Powered-By: Koa header' },
+        { source: 'cookies',      regex: /\bkoa:sess\b|koa\.sess/,             weight: 0.50, evidence: 'Koa session cookie' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Hapi.js ───────────────────────────────────────────────────── */
+    {
+      name: 'Hapi.js',
+      icon: '🟡',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-powered-by:\s*hapi/i,              weight: 0.55, evidence: 'X-Powered-By: hapi header' },
+        { source: 'cookies',      regex: /\bsid-hapi\b/,                      weight: 0.50, evidence: 'Hapi session cookie' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── AdonisJS ──────────────────────────────────────────────────── */
+    {
+      name: 'AdonisJS',
+      icon: '💜',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-powered-by:\s*adonisjs/i,          weight: 0.55, evidence: 'X-Powered-By: AdonisJS header' },
+        { source: 'cookies',      regex: /\badonis-session\b/,                weight: 0.50, evidence: 'AdonisJS session cookie' },
+        { source: 'cookies',      regex: /\bXSRF-TOKEN\b/,                    weight: 0.15, evidence: 'XSRF-TOKEN cookie (AdonisJS pattern)' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Go (net/http) ─────────────────────────────────────────────── */
+    {
+      name: 'Go',
+      icon: '🐹',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /^server:\s*Go\b/m,                   weight: 0.55, evidence: 'Server: Go header' },
+        { source: 'headers',      regex: /x-powered-by:\s*go/i,                weight: 0.50, evidence: 'X-Powered-By: Go header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Gin (Go) ──────────────────────────────────────────────────── */
+    {
+      name: 'Gin',
+      icon: '🍸',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-powered-by:\s*gin/i,               weight: 0.55, evidence: 'X-Powered-By: Gin header' },
+        { source: 'headers',      regex: /^server:\s*gin/im,                   weight: 0.55, evidence: 'Server: Gin header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── FastHTTP (Go) ─────────────────────────────────────────────── */
+    {
+      name: 'FastHTTP',
+      icon: '⚡',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /^server:\s*fasthttp/im,              weight: 0.60, evidence: 'Server: fasthttp header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Actix Web (Rust) ──────────────────────────────────────────── */
+    {
+      name: 'Actix Web',
+      icon: '🦀',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-powered-by:\s*actix/i,             weight: 0.55, evidence: 'X-Powered-By: Actix header' },
+        { source: 'headers',      regex: /^server:\s*actix-web/im,             weight: 0.60, evidence: 'Server: Actix-Web header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── CakePHP ───────────────────────────────────────────────────── */
+    {
+      name: 'CakePHP',
+      icon: '🍰',
+      inferred: true,
+      patterns: [
+        { source: 'cookies',      regex: /\bcakephp\b/i,                       weight: 0.55, evidence: 'CakePHP session cookie' },
+        { source: 'cookies',      regex: /\bcsrfToken\b/,                      weight: 0.20, evidence: 'CakePHP CSRF token cookie' },
+        { source: 'html',         regex: /cakephp/i,                           weight: 0.30, evidence: 'CakePHP reference in page' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── CodeIgniter ───────────────────────────────────────────────── */
+    {
+      name: 'CodeIgniter',
+      icon: '🔥',
+      inferred: true,
+      patterns: [
+        { source: 'cookies',      regex: /\bci_session\b/,                     weight: 0.55, evidence: 'CodeIgniter ci_session cookie' },
+        { source: 'cookies',      regex: /\bcsrf_cookie_name\b/,               weight: 0.30, evidence: 'CodeIgniter CSRF cookie' },
+        { source: 'headers',      regex: /x-powered-by:\s*codeigniter/i,       weight: 0.55, evidence: 'X-Powered-By: CodeIgniter header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Next.js API Routes (Server-Side) ──────────────────────────── */
+    {
+      name: 'Next.js API',
+      icon: '▲',
+      inferred: true,
+      patterns: [
+        { source: 'headers',      regex: /x-nextjs-/i,                         weight: 0.55, evidence: 'X-Nextjs-* response header' },
+        { source: 'headers',      regex: /x-middleware-/i,                      weight: 0.35, evidence: 'X-Middleware-* header (Next.js edge)' },
+        { source: 'headers',      regex: /x-powered-by:\s*next\.js/i,          weight: 0.55, evidence: 'X-Powered-By: Next.js header' },
+      ],
+      requiredMatches: 1,
+    },
   ];
 })();

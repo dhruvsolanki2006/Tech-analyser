@@ -212,5 +212,177 @@
       ],
       requiredMatches: 1,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Ember.js ──────────────────────────────────────────────────── */
+    {
+      name: 'Ember.js',
+      icon: '🐹',
+      patterns: [
+        { source: 'globals',      regex: /\bEmber\b/,                           weight: 0.50, evidence: 'window.Ember global present' },
+        { source: 'html',         regex: /data-ember-action/,                   weight: 0.45, evidence: 'data-ember-action attribute' },
+        { source: 'html',         regex: /id="ember\d+"/,                       weight: 0.40, evidence: 'Ember auto-generated element IDs' },
+        { source: 'metaTags',     regex: /ember/i,                              weight: 0.30, evidence: 'Ember reference in meta tags' },
+        { source: 'scriptSrcs',   regex: /ember(?:\.min)?\.js/i,                weight: 0.40, evidence: 'Ember.js script loaded' },
+        { source: 'resourceUrls', regex: /ember/i,                              weight: 0.20, evidence: 'Ember in resource URLs' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Lit ────────────────────────────────────────────────────────── */
+    {
+      name: 'Lit',
+      icon: '🔆',
+      patterns: [
+        { source: 'scriptSrcs',   regex: /lit(?:-html|-element)?(?:\.min)?\.js/i, weight: 0.50, evidence: 'Lit script loaded' },
+        { source: 'resourceUrls', regex: /lit-html|lit-element|@lit\//i,        weight: 0.45, evidence: 'Lit modules in resource URLs' },
+        { source: 'scriptContents', regex: /LitElement|lit-html/,               weight: 0.40, evidence: 'LitElement or lit-html in inline scripts' },
+        { source: 'html',         regex: /<!--\?lit\$/,                         weight: 0.55, evidence: 'Lit template marker comment' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Stencil ───────────────────────────────────────────────────── */
+    {
+      name: 'Stencil',
+      icon: '⚙️',
+      patterns: [
+        { source: 'html',         regex: /data-stencil/,                        weight: 0.50, evidence: 'data-stencil attribute found' },
+        { source: 'html',         regex: /s-id="/,                              weight: 0.35, evidence: 'Stencil s-id attribute' },
+        { source: 'scriptSrcs',   regex: /stencil/i,                            weight: 0.40, evidence: 'Stencil script loaded' },
+        { source: 'resourceUrls', regex: /@stencil\/core/i,                     weight: 0.45, evidence: '@stencil/core in resource URLs' },
+        { source: 'html',         regex: /class="hydrated"/,                    weight: 0.20, evidence: 'Stencil hydrated class (also used by others)' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── HTMX ──────────────────────────────────────────────────────── */
+    {
+      name: 'HTMX',
+      icon: '📡',
+      patterns: [
+        { source: 'html',         regex: /hx-(?:get|post|put|delete|patch|trigger|target|swap|push-url)=/i, weight: 0.50, evidence: 'HTMX hx-* attributes in DOM' },
+        { source: 'globals',      regex: /\bhtmx\b/,                            weight: 0.50, evidence: 'window.htmx global present' },
+        { source: 'scriptSrcs',   regex: /htmx(?:\.min)?\.js/i,                 weight: 0.50, evidence: 'HTMX script loaded' },
+        { source: 'resourceUrls', regex: /htmx\.org/i,                          weight: 0.40, evidence: 'htmx.org in resource URLs' },
+        { source: 'html',         regex: /hx-boost/,                            weight: 0.30, evidence: 'HTMX hx-boost attribute' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Turbo (Hotwire) ───────────────────────────────────────────── */
+    {
+      name: 'Turbo',
+      icon: '⚡',
+      patterns: [
+        { source: 'html',         regex: /data-turbo/,                          weight: 0.40, evidence: 'data-turbo attribute found' },
+        { source: 'html',         regex: /<turbo-frame/,                        weight: 0.50, evidence: '<turbo-frame> element found' },
+        { source: 'html',         regex: /<turbo-stream/,                       weight: 0.50, evidence: '<turbo-stream> element found' },
+        { source: 'globals',      regex: /\bTurbo\b/,                           weight: 0.45, evidence: 'window.Turbo global present' },
+        { source: 'scriptSrcs',   regex: /turbo(?:\.min)?\.js/i,                weight: 0.40, evidence: 'Turbo script loaded' },
+        { source: 'html',         regex: /data-turbo-track/,                    weight: 0.35, evidence: 'data-turbo-track attribute' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Stimulus (Hotwire) ────────────────────────────────────────── */
+    {
+      name: 'Stimulus',
+      icon: '⚡',
+      patterns: [
+        { source: 'html',         regex: /data-controller="/,                   weight: 0.40, evidence: 'Stimulus data-controller attribute' },
+        { source: 'html',         regex: /data-action="/,                       weight: 0.25, evidence: 'Stimulus data-action attribute' },
+        { source: 'html',         regex: /data-target="/,                       weight: 0.20, evidence: 'Stimulus data-target attribute' },
+        { source: 'globals',      regex: /\bStimulus\b/,                        weight: 0.50, evidence: 'window.Stimulus global present' },
+        { source: 'scriptSrcs',   regex: /stimulus(?:\.min)?\.js/i,             weight: 0.45, evidence: 'Stimulus script loaded' },
+        { source: 'resourceUrls', regex: /@hotwired\/stimulus/i,                weight: 0.50, evidence: '@hotwired/stimulus in resource URLs' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Mithril.js ────────────────────────────────────────────────── */
+    {
+      name: 'Mithril.js',
+      icon: '🔵',
+      patterns: [
+        { source: 'globals',      regex: /\bmithril\b/i,                        weight: 0.50, evidence: 'window.m (Mithril) global present' },
+        { source: 'scriptSrcs',   regex: /mithril(?:\.min)?\.js/i,              weight: 0.50, evidence: 'Mithril.js script loaded' },
+        { source: 'resourceUrls', regex: /mithril/i,                            weight: 0.35, evidence: 'Mithril in resource URLs' },
+        { source: 'scriptContents', regex: /m\.render|m\.mount|m\.route/,       weight: 0.40, evidence: 'Mithril m.render/mount/route calls' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Material UI (MUI) ─────────────────────────────────────────── */
+    {
+      name: 'Material UI',
+      icon: '🎨',
+      patterns: [
+        { source: 'html',         regex: /class="[^"]*Mui[A-Z][a-zA-Z]+-root/,  weight: 0.50, evidence: 'MUI component root class (e.g. MuiButton-root)' },
+        { source: 'html',         regex: /class="[^"]*css-[a-z0-9]+-Mui/,       weight: 0.45, evidence: 'MUI Emotion-based CSS class' },
+        { source: 'scriptSrcs',   regex: /@mui\//i,                             weight: 0.50, evidence: '@mui/ package in script source' },
+        { source: 'resourceUrls', regex: /@mui\/material/i,                     weight: 0.45, evidence: '@mui/material in resource URLs' },
+        { source: 'html',         regex: /MuiBox|MuiTypography|MuiButton/,      weight: 0.35, evidence: 'MUI component classes in DOM' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Chakra UI ─────────────────────────────────────────────────── */
+    {
+      name: 'Chakra UI',
+      icon: '⚡',
+      patterns: [
+        { source: 'html',         regex: /class="[^"]*chakra-/,                 weight: 0.50, evidence: 'Chakra UI chakra-* class names' },
+        { source: 'scriptSrcs',   regex: /@chakra-ui\//i,                       weight: 0.50, evidence: '@chakra-ui/ package loaded' },
+        { source: 'resourceUrls', regex: /@chakra-ui/i,                         weight: 0.40, evidence: '@chakra-ui in resource URLs' },
+        { source: 'html',         regex: /data-chakra-/,                        weight: 0.45, evidence: 'data-chakra-* attributes' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Ant Design ────────────────────────────────────────────────── */
+    {
+      name: 'Ant Design',
+      icon: '🐜',
+      patterns: [
+        { source: 'html',         regex: /class="[^"]*ant-[a-z]+/,              weight: 0.45, evidence: 'Ant Design ant-* class names' },
+        { source: 'linkHrefs',    regex: /antd(?:\.min)?\.css/i,                weight: 0.50, evidence: 'Ant Design CSS loaded' },
+        { source: 'scriptSrcs',   regex: /antd(?:\.min)?\.js/i,                 weight: 0.50, evidence: 'Ant Design JS loaded' },
+        { source: 'resourceUrls', regex: /antd/i,                               weight: 0.30, evidence: 'antd in resource URLs' },
+        { source: 'html',         regex: /ant-btn|ant-modal|ant-table|ant-form/, weight: 0.40, evidence: 'Ant Design component classes' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Foundation ────────────────────────────────────────────────── */
+    {
+      name: 'Foundation',
+      icon: '🏗️',
+      patterns: [
+        { source: 'linkHrefs',    regex: /foundation(?:\.min)?\.css/i,          weight: 0.50, evidence: 'Foundation CSS loaded' },
+        { source: 'scriptSrcs',   regex: /foundation(?:\.min)?\.js/i,           weight: 0.50, evidence: 'Foundation JS loaded' },
+        { source: 'resourceUrls', regex: /foundation(?:\.min)?\.(?:css|js)/i,   weight: 0.35, evidence: 'Foundation in resource URLs' },
+        { source: 'globals',      regex: /\bFoundation\b/,                      weight: 0.45, evidence: 'window.Foundation global present' },
+        { source: 'html',         regex: /class="[^"]*(?:small-\d+|medium-\d+|large-\d+|columns)/i, weight: 0.25, evidence: 'Foundation grid class names' },
+      ],
+      requiredMatches: 2,
+    },
+
+    /* ── Bulma ─────────────────────────────────────────────────────── */
+    {
+      name: 'Bulma',
+      icon: '🟢',
+      patterns: [
+        { source: 'linkHrefs',    regex: /bulma(?:\.min)?\.css/i,               weight: 0.55, evidence: 'Bulma CSS loaded' },
+        { source: 'resourceUrls', regex: /bulma(?:\.min)?\.css/i,               weight: 0.45, evidence: 'Bulma in resource URLs' },
+        { source: 'html',         regex: /class="[^"]*\b(?:is-primary|is-link|is-info|is-success|is-warning|is-danger)\b[^"]*\b(?:button|notification|tag|hero)\b/i, weight: 0.35, evidence: 'Bulma modifier + component classes' },
+        { source: 'html',         regex: /class="[^"]*\bhero-body\b/,           weight: 0.30, evidence: 'Bulma hero-body class' },
+        { source: 'html',         regex: /class="[^"]*\bnavbar-burger\b/,       weight: 0.25, evidence: 'Bulma navbar-burger class' },
+      ],
+      requiredMatches: 1,
+    },
   ];
 })();

@@ -117,5 +117,76 @@
       ],
       requiredMatches: 1,
     },
+
+    /* ══════════════════════════════════════════════════════════════════
+     *  NEW ADDITIONS BELOW
+     * ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Tengine ───────────────────────────────────────────────────── */
+    {
+      name: 'Tengine',
+      icon: '🟩',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*tengine/im,                    weight: 0.60, evidence: 'Server: Tengine header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Cowboy (Erlang) ───────────────────────────────────────────── */
+    {
+      name: 'Cowboy',
+      icon: '🤠',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*cowboy/im,                     weight: 0.60, evidence: 'Server: Cowboy header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Kestrel (.NET) ────────────────────────────────────────────── */
+    {
+      name: 'Kestrel',
+      icon: '🟦',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*kestrel/im,                    weight: 0.60, evidence: 'Server: Kestrel header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Gunicorn ──────────────────────────────────────────────────── */
+    {
+      name: 'Gunicorn',
+      icon: '🦎',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*gunicorn/im,                   weight: 0.60, evidence: 'Server: gunicorn header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Uvicorn ───────────────────────────────────────────────────── */
+    {
+      name: 'Uvicorn',
+      icon: '⚡',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*uvicorn/im,                    weight: 0.60, evidence: 'Server: uvicorn header' },
+      ],
+      requiredMatches: 1,
+    },
+
+    /* ── Traefik ───────────────────────────────────────────────────── */
+    {
+      name: 'Traefik',
+      icon: '🔀',
+      headerOnly: true,
+      patterns: [
+        { source: 'headers', regex: /^server:\s*traefik/im,                    weight: 0.60, evidence: 'Server: Traefik header' },
+        { source: 'headers', regex: /x-traefik-/i,                             weight: 0.55, evidence: 'X-Traefik-* headers' },
+      ],
+      requiredMatches: 1,
+    },
   ];
 })();
