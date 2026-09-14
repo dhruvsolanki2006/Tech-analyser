@@ -8,7 +8,6 @@
  * If no headers are available the scan engine shows:
  *   "Not Publicly Exposed"
  */
-
 (() => {
   'use strict';
   self.TechDetectors = self.TechDetectors || {};
